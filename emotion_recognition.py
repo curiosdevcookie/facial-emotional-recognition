@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 def main():
     capture = cv2.VideoCapture(0)
@@ -15,7 +16,13 @@ def main():
 
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-            cv2.imshow('Video Feed', frame)
+            
+            # Preprocess the face for the model
+            face_gray_resized = cv2.resize(gray[y:y+h, x:x+w], (48, 48))
+            face_gray_normalized = face_gray_resized / 255.0
+            face_gray_reshaped = np.reshape(face_gray_normalized, (1, 48, 48, 1))
+
+        cv2.imshow('Video Feed', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
