@@ -2,6 +2,8 @@
 
 This is a basic facial emotional recognition written in Python for a talk I'll give at my company.
 
+It uses OpenCV for image processing, and NumPy for the mathematics.
+
 - [Facial Emotional Recognition](#facial-emotional-recognition)
   - [Installation](#installation)
   - [Usage](#usage)
