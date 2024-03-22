@@ -14,11 +14,11 @@ import matplotlib.pyplot as plt
 train_path = './archive/train'
 test_path = './archive/test'
 
-folder_list = os.listdir(train_path)
-folder_list.sort()
+folder_list_train = os.listdir(train_path)
+folder_list_train.sort()
 
-folder_list = os.listdir(test_path)
-folder_list.sort()
+folder_list_test = os.listdir(test_path)
+folder_list_test.sort()
 
 
 # create empty arrays for training:
@@ -30,7 +30,7 @@ x_test = []
 y_test = []
 
 # Load the training data into the array:
-for i, category in enumerate(folder_list):
+for i, category in enumerate(folder_list_train):
     files = os.listdir(train_path + '/' + category)
 
     for file in files:
@@ -39,7 +39,7 @@ for i, category in enumerate(folder_list):
         y_train.append(i)
 
 # Load the test data into the array:
-for i, category in enumerate(folder_list):
+for i, category in enumerate(folder_list_test):
     files = os.listdir(test_path + '/' + category)
 
     for file in files:
