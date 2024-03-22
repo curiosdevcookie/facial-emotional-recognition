@@ -1,8 +1,13 @@
 import cv2
 import numpy as np
+import keras
+from keras.models import load_model
+
+capture = cv2.VideoCapture(1)
+model = load_model('model_emotion.keras')
+classes = ['angry', 'disgusted', 'fearful', 'happy', 'neutral', 'sad', 'surprised']
 
 def main():
-    capture = cv2.VideoCapture(0)
 
     while True:
         ret, frame = capture.read()
@@ -27,6 +32,14 @@ def main():
             face_gray_resized = cv2.resize(gray[y:y+h, x:x+w], (48, 48))
             face_gray_normalized = face_gray_resized / 255.0
             face_gray_reshaped = np.reshape(face_gray_normalized, (1, 48, 48, 1))
+
+            prediction = model.predict(face_gray_reshaped)
+            max_index = np.argmax(prediction)
+            predicted_emotion = classes[max_index]
+            print(prediction)
+
+            cv2.putText(frame, predicted_emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+
 
         cv2.imshow('Video Feed', frame)
 
