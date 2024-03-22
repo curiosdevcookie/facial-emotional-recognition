@@ -150,28 +150,30 @@ model.save(modelFileName)
 
 
 # PLOT THE RESULTS
+def plot_model_performance(history):
+    acc = history.history['accuracy']
+    val_acc = history.history['val_accuracy']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
 
-acc = history.history['accuracy']
-val_acc = history.history['val_accuracy']
-loss = history.history['loss']
-val_loss = history.history['val_loss']
+    epochs = range(len(acc))
 
-epochs = range(len(acc))
+    # show train and validation train chart
+    plt.plot(epochs, acc , 'r' , label="Train accuracy")
+    plt.plot(epochs, val_acc , 'b' , label="Validation accuracy")
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title("Training and validation Accuracy")
+    plt.legend(loc='lower right')
+    plt.grid(True)
+    plt.show()
 
-# show train and validation train chart
-plt.plot(epochs, acc , 'r' , label="Train accuracy")
-plt.plot(epochs, val_acc , 'b' , label="Validation accuracy")
-plt.xlabel('Epoch')
-plt.ylabel('Accuracy')
-plt.title("Trainig and validation Accuracy")
-plt.legend(loc='lower right')
-plt.show()
-
-# show loss and validation loss chart
-plt.plot(epochs, loss , 'r' , label="Train loss")
-plt.plot(epochs, val_loss , 'b' , label="Validation loss")
-plt.xlabel('Epoch')
-plt.ylabel('Loss')
-plt.title("Trainig and validation Loss")
-plt.legend(loc='upper right')
-plt.show()
+    # show loss and validation loss chart
+    plt.plot(epochs, loss , 'r' , label="Train loss")
+    plt.plot(epochs, val_loss , 'b' , label="Validation loss")
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title("Training and validation Loss")
+    plt.legend(loc='upper right')
+    plt.grid(True)
+    plt.show()
