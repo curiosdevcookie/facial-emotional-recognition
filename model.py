@@ -8,6 +8,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
+import matplotlib.pyplot as plt
 
 
 train_path = './archive/train'
@@ -134,6 +135,7 @@ stopEarly = EarlyStopping(monitor='val_accuracy' , patience=5) # patience is the
 
 
 # TRAIN THE MODEL
+
 history = model.fit(x_train, y_train,
                     batch_size=batch,
                     epochs=epochs,
@@ -144,3 +146,32 @@ history = model.fit(x_train, y_train,
 
 modelFileName = os.path.join(os.getcwd(), 'model_emotion.keras')
 model.save(modelFileName)
+
+
+
+# PLOT THE RESULTS
+
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(len(acc))
+
+# show train and validation train chart
+plt.plot(epochs, acc , 'r' , label="Train accuracy")
+plt.plot(epochs, val_acc , 'b' , label="Validation accuracy")
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.title("Trainig and validation Accuracy")
+plt.legend(loc='lower right')
+plt.show()
+
+# show loss and validation loss chart
+plt.plot(epochs, loss , 'r' , label="Train loss")
+plt.plot(epochs, val_loss , 'b' , label="Validation loss")
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title("Trainig and validation Loss")
+plt.legend(loc='upper right')
+plt.show()
