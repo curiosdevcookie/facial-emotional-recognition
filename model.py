@@ -8,7 +8,6 @@ from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
-import matplotlib.pyplot as plt
 
 
 train_path = './archive/train'
@@ -43,7 +42,7 @@ for i, category in enumerate(folder_list):
     files = os.listdir(test_path + '/' + category)
 
     for file in files:
-        img = cv2.imread(train_path+'/'+category+'/{0}'.format(file),0)
+        img = cv2.imread(test_path+'/'+category+'/{0}'.format(file),0)
         x_test.append(img)
         y_test.append(i)
 

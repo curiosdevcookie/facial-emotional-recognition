@@ -4,7 +4,7 @@ import keras
 from keras.models import load_model
 
 capture = cv2.VideoCapture(1)
-model = load_model('model_emotion.keras')
+model = load_model('output/model_emotion.keras')
 classes = ['angry', 'disgusted', 'fearful', 'happy', 'neutral', 'sad', 'surprised']
 
 def main():
