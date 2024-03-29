@@ -3,7 +3,7 @@ import numpy as np
 import keras
 from keras.models import load_model
 
-capture = cv2.VideoCapture(1)
+capture = cv2.VideoCapture(0)
 model = load_model('output/model_emotion.keras')
 classes = ['angry', 'disgusted', 'fearful', 'happy', 'neutral', 'sad', 'surprised']
 
@@ -38,7 +38,7 @@ def main():
             predicted_emotion = classes[max_index]
             print(prediction)
 
-            cv2.putText(frame, predicted_emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+            cv2.putText(frame, predicted_emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 0, 255), 2)
 
 
         cv2.imshow('Video Feed', frame)
