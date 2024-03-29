@@ -1,16 +1,11 @@
 import numpy as np
 import os
 import cv2
-
-import tensorflow as tf
-from tensorflow import keras
-from keras.layers import RandomCrop, RandomFlip, RandomRotation, RandomZoom
 import os
-
+from keras.layers import RandomZoom
 from keras import utils
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
-from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
 
