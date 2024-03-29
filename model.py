@@ -49,7 +49,7 @@ labels_test = utils.to_categorical(labels_test, 7)
 
 # Model architecture
 model = Sequential([
-    RandomCrop(height=48, width=48, seed=None, name=None),
+    RandomZoom(height_factor=0.2, width_factor=0.2, fill_mode="reflect", interpolation="bilinear"),
     Conv2D(64, (3, 3), activation='relu', input_shape=(48, 48, 1)),
     MaxPooling2D(2, 2),
     Conv2D(128, (3, 3), activation='relu'),
