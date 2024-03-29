@@ -3,7 +3,6 @@ import os
 import cv2
 import keras
 import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from keras.layers import BatchNormalization
 import os
 
@@ -18,10 +17,10 @@ def load_images_from_folder(folder):
     images = []
     labels = []
     for label, category in enumerate(sorted(os.listdir(folder))):
-        category_path = os.path.join(folder, category)
-        for file in os.listdir(category_path):
+        categorlabels_path = os.path.join(folder, category)
+        for file in os.listdir(categorlabels_path):
             try:
-                img_path = os.path.join(category_path, file)
+                img_path = os.path.join(categorlabels_path, file)
                 img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 if img is not None:
                     img = cv2.resize(img, (48, 48))  # Resize images to 48x48
@@ -34,43 +33,31 @@ def load_images_from_folder(folder):
 train_path = './archive/train'
 test_path = './archive/test'
 
-x_train, y_train = load_images_from_folder(train_path)
-x_test, y_test = load_images_from_folder(test_path)
+images_train, labels_train = load_images_from_folder(train_path)
+images_test, labels_test = load_images_from_folder(test_path)
 
 # Normalize and reshape
-x_train, x_test = x_train / 255.0, x_test / 255.0
-x_train = x_train.reshape(-1, 48, 48, 1)
-x_test = x_test.reshape(-1, 48, 48, 1)
+images_train, images_test = images_train / 255.0, images_test / 255.0
+images_train = images_train.reshape(-1, 48, 48, 1)
+images_test = images_test.reshape(-1, 48, 48, 1)
 
 # Convert labels to categorical
-y_train = keras.utils.to_categorical(y_train, 7)
-y_test = keras.utils.to_categorical(y_test, 7)
+labels_train = utils.to_categorical(labels_train, 7)
+labels_test = utils.to_categorical(labels_test, 7)
 
-# Data augmentation
-datagen = ImageDataGenerator(rotation_range=20, width_shift_range=0.2, height_shift_range=0.2, horizontal_flip=True)
 
 # Model architecture
 model = Sequential([
-  Conv2D(32, (3, 3), padding="same", activation="relu", input_shape=(48, 48, 1)),
-  BatchNormalization(),
-  MaxPooling2D(2, 2),
-  Dropout(0.25),
-  Conv2D(64, (3, 3), padding="same", activation="relu"),
-  BatchNormalization(),
-  MaxPooling2D(2, 2),
-  Dropout(0.25),
-  Conv2D(128, (3, 3), padding="same", activation="relu"),
-  BatchNormalization(),
-  MaxPooling2D(2, 2),
-  Dropout(0.25),
-  Flatten(),
-  Dense(512, activation='relu'),
-  BatchNormalization(),
-  Dropout(0.5),
-  Dense(7, activation='softmax')
+    Conv2D(64, (3, 3), activation='relu', input_shape=(48, 48, 1)),
+    MaxPooling2D(2, 2),
+    Conv2D(128, (3, 3), activation='relu'),
+    MaxPooling2D(2, 2),
+    Flatten(),
+    Dense(512, activation='relu'),
+    Dropout(0.5),
+    Dense(7, activation='softmax')
 ])
 
-# Compile the model
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Print the model summary
@@ -79,26 +66,34 @@ model.summary()
 # Callbacks
 stopEarly = EarlyStopping(monitor='val_accuracy', patience=5, restore_best_weights=True)
 
-batch = 64
-epochs = 60
+epochs = 30
+batch_size = 64
 
 # TRAIN THE MODEL
+history = model.fit(images_train, labels_train, batch_size=batch_size, epochs=epochs, validation_data=(images_test, labels_test), callbacks=[stopEarly])
 
-history = model.fit(datagen.flow(x_train, y_train, batch_size=batch),
-                    epochs=epochs,
-                    validation_data=(x_test, y_test),
-                    callbacks=[stopEarly])
 
-modelFileName = os.path.join(os.getcwd(), 'model_emotion.keras')
+modelFileName = os.path.join(os.getcwd(), 'output/model_emotion.keras')
 model.save(modelFileName)
 
+
+# TEST THE MODEL
+
+test_loss, test_acc = model.evaluate(images_test, labels_test, verbose=2)
+print('\nTest accuracy:', test_acc)
 
 
 # PLOT THE RESULTS
 def plot_model_performance(history):
+    # This is the model's accuracy on the training dataset. Accuracy is a measure of how well the model's predictions match the actual labels.
     acc = history.history['accuracy']
+    # This is the model's accuracy on the validation dataset. The validation accuracy is a good indicator of how well the model is generalizing to unseen data.
     val_acc = history.history['val_accuracy']
+    # The loss function measures how well the model's predictions match the actual labels.
+    # A higher loss value indicates that the model's predictions are less accurate.
     loss = history.history['loss']
+    # This is the value of the loss function for the validation dataset.
+    # The validation loss is a good indicator of how well the model is generalizing to unseen data.
     val_loss = history.history['val_loss']
 
     epochs_range = range(len(acc))
