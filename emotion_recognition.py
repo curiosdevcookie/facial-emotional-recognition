@@ -42,7 +42,10 @@ def main():
             if max_probability >= THRESHOLD:
                 prev_emotion = predicted_emotion
             else:
-                predicted_emotion = prev_emotion
+                if prev_emotion is not None:
+                    predicted_emotion = prev_emotion
+                else:
+                    predicted_emotion = "neutral"
 
             cv2.putText(frame, predicted_emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 3, (0, 0, 255), 2)
 
