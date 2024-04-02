@@ -13,17 +13,20 @@ def load_images_from_folder(folder):
     images = []
     labels = []
     for label, category in enumerate(sorted(os.listdir(folder))):
-        categorlabels_path = os.path.join(folder, category)
-        for file in os.listdir(categorlabels_path):
-            try:
-                img_path = os.path.join(categorlabels_path, file)
+        if category.startswith('.'):
+            continue
+        print(f"Assigning label {label} to category {category}")
+        categorylabels_path = os.path.join(folder, category)
+        if os.path.isdir(categorylabels_path):
+            print(f"Processing folder from filepath: {categorylabels_path} : {category}")
+            for file in os.listdir(categorylabels_path):
+                img_path = os.path.join(categorylabels_path, file)
                 img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
                 if img is not None:
                     img = cv2.resize(img, (48, 48))  # Resize images to 48x48
                     images.append(img)
                     labels.append(label)
-            except Exception as e:
-                print(f"Error loading image: {img_path}, error: {e}")
+            label += 1
     return np.array(images, dtype="float32"), np.array(labels, dtype="float32")
 
 train_path = './archive/train'
@@ -32,14 +35,24 @@ test_path = './archive/test'
 images_train, labels_train = load_images_from_folder(train_path)
 images_test, labels_test = load_images_from_folder(test_path)
 
+
+print("Unique labels in training set:", np.unique(labels_train))
+print("Unique labels in test set:", np.unique(labels_test))
+
 # Normalize and reshape
 images_train, images_test = images_train / 255.0, images_test / 255.0
 images_train = images_train.reshape(-1, 48, 48, 1)
 images_test = images_test.reshape(-1, 48, 48, 1)
 
+print("Labels in training set before conversion:", labels_train)
+print("Labels in test set before conversion:", labels_test)
+
+labels_train = labels_train.astype(int)
+labels_test = labels_test.astype(int)
+
 # Convert labels to categorical
-labels_train = utils.to_categorical(labels_train, 7)
-labels_test = utils.to_categorical(labels_test, 7)
+labels_train = utils.to_categorical(labels_train, 8)
+labels_test = utils.to_categorical(labels_test, 8)
 
 
 # Model architecture
@@ -52,7 +65,7 @@ model = Sequential([
     Flatten(),
     Dense(512, activation='relu'),
     Dropout(0.5),
-    Dense(7, activation='softmax')
+    Dense(8, activation='softmax')
 ])
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
