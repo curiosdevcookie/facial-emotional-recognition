@@ -84,7 +84,7 @@ batch_size = 64
 history = model.fit(images_train, labels_train, epochs=epochs, batch_size=batch_size, validation_data=(images_test, labels_test), callbacks=[stopEarly])
 
 
-modelFileName = os.path.join(os.getcwd(), 'output/model_emotion_2.keras')
+modelFileName = os.path.join(os.getcwd(), 'output/model_emotion.keras')
 model.save(modelFileName)
 
 
