@@ -26,7 +26,6 @@ def load_images_from_folder(folder):
                     img = cv2.resize(img, (48, 48))  # Resize images to 48x48
                     images.append(img)
                     labels.append(label)
-            label += 1
     return np.array(images, dtype="float32"), np.array(labels, dtype="float32")
 
 train_path = './archive/train'
