@@ -2,7 +2,7 @@ import numpy as np
 import os
 import cv2
 import os
-from keras.layers import RandomZoompy
+from keras.layers import RandomZoom
 from keras import utils
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
