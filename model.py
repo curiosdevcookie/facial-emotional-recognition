@@ -58,7 +58,6 @@ labels_test = utils.to_categorical(labels_test, 8)
 # Model architecture
 model = Sequential([
     RandomZoom(height_factor=0.2, width_factor=0.2, fill_mode="reflect", interpolation="bilinear"),
-    RandomRotation(factor=(-0.2, 0.3), fill_mode="reflect", interpolation="bilinear"),
     Conv2D(64, (3, 3), activation='relu', input_shape=(48, 48, 1)),
     MaxPooling2D(2, 2),
     Conv2D(128, (3, 3), activation='relu'),
