@@ -58,11 +58,15 @@ labels_test = utils.to_categorical(labels_test, 8)
 model = Sequential([
     RandomZoom(height_factor=0.2, width_factor=0.2, fill_mode="reflect", interpolation="bilinear"),
     Conv2D(64, (3, 3), activation='relu', input_shape=(48, 48, 1)),
+    Conv2D(64, (3, 3), activation='relu'),
     MaxPooling2D(2, 2),
+    Conv2D(128, (3, 3), activation='relu'),
     Conv2D(128, (3, 3), activation='relu'),
     MaxPooling2D(2, 2),
     Flatten(),
     Dense(512, activation='relu'),
+    Dropout(0.5),
+    Dense(256, activation='relu'),
     Dropout(0.5),
     Dense(8, activation='softmax')
 ])
