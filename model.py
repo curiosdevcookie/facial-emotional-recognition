@@ -58,11 +58,12 @@ model = Sequential([
     Input(shape=(48, 48, 1)),
     RandomZoom(height_factor=0.2, width_factor=0.2, fill_mode="reflect", interpolation="bilinear"),
     Conv2D(32, (3, 3), activation='relu'),
-    MaxPooling2D((2, 2)),
+    MaxPooling2D(),
     Conv2D(64, (3, 3), activation='relu'),
-    MaxPooling2D((2, 2)),
+    MaxPooling2D(),
+    Conv2D(64, (3, 3), activation='relu'),
     Flatten(),
-    Dense(128, activation='relu'),
+    Dense(64, activation='relu'),
     Dropout(0.5),
     Dense(8, activation='softmax')
 ])
@@ -75,7 +76,7 @@ model.summary()
 # Callbacks
 stopEarly = EarlyStopping(monitor='val_accuracy', patience=5, restore_best_weights=True)
 
-epochs = 30
+epochs = 60
 batch_size = 64
 
 # TRAIN THE MODEL
