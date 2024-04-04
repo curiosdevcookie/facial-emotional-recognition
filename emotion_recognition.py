@@ -1,11 +1,10 @@
 import cv2
 import numpy as np
-import keras
 from keras.models import load_model
 
 capture = cv2.VideoCapture(0)
 model = load_model('output/model_emotion.keras')
-classes = ['anger', 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise']
+classes = ['anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']
 
 THRESHOLD = 0.5
 def main():

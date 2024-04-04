@@ -1,11 +1,10 @@
 import numpy as np
 import os
 import cv2
-import os
 from keras.layers import RandomZoom
 from keras import utils
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
+from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 from keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
 
@@ -56,17 +55,14 @@ labels_test = utils.to_categorical(labels_test, 8)
 
 # Model architecture
 model = Sequential([
+    Input(shape=(48, 48, 1)),
     RandomZoom(height_factor=0.2, width_factor=0.2, fill_mode="reflect", interpolation="bilinear"),
-    Conv2D(64, (3, 3), activation='relu', input_shape=(48, 48, 1)),
+    Conv2D(32, (3, 3), activation='relu'),
+    MaxPooling2D((2, 2)),
     Conv2D(64, (3, 3), activation='relu'),
-    MaxPooling2D(2, 2),
-    Conv2D(128, (3, 3), activation='relu'),
-    Conv2D(128, (3, 3), activation='relu'),
-    MaxPooling2D(2, 2),
+    MaxPooling2D((2, 2)),
     Flatten(),
-    Dense(512, activation='relu'),
-    Dropout(0.5),
-    Dense(256, activation='relu'),
+    Dense(128, activation='relu'),
     Dropout(0.5),
     Dense(8, activation='softmax')
 ])
