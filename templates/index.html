@@ -1,1 +1,63 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Emotion Recognition</title>
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+  </head>
+  <body>
+    <video id="video" autoplay></video>
+    <div id="error-message"></div>
+    <div id="emotion-result"></div>
+    <script>
+      const video = document.getElementById("video");
+      const socket = io.connect(
+        "http://" + document.domain + ":" + location.port
+      );
+
+      const errorMessage = document.getElementById("error-message");
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function (stream) {
+            video.srcObject = stream;
+          })
+          .catch(function (error) {
+            errorMessage.textContent =
+              "Error accessing camera: " + error.message;
+          });
+      } else {
+        errorMessage.textContent = "getUserMedia not supported on your browser";
+      }
+
+      video.addEventListener("play", function () {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+
+        setInterval(function () {
+          if (video.videoWidth > 0 && video.videoHeight > 0) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const data = canvas.toDataURL("image/jpeg", 0.8);
+
+            socket.emit("image", data);
+          }
+        }, 100);
+      });
+
+      socket.on("result", function (msg) {
+        console.log("Received result from server:", msg);
+        console.log("Predicted emotion:", msg.emotion);
+        document.getElementById("emotion-result").textContent =
+          "Emotion: " + msg.emotion;
+      });
+    </script>
+  </body>
+</html>
