@@ -4,7 +4,7 @@ import cv2
 from keras.layers import RandomZoom
 from keras import utils
 from keras.models import Sequential
-from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten, Dropout
+from keras.layers import Input, Dense, Conv2D, AveragePooling2D, Flatten, Dropout
 from keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
 
@@ -27,8 +27,8 @@ def load_images_from_folder(folder):
                     labels.append(label)
     return np.array(images, dtype="float32"), np.array(labels, dtype="float32")
 
-train_path = './archive/train'
-test_path = './archive/test'
+train_path = './archive/data/train'
+test_path = './archive/data/test'
 
 images_train, labels_train = load_images_from_folder(train_path)
 images_test, labels_test = load_images_from_folder(test_path)
@@ -52,15 +52,17 @@ labels_test = labels_test.astype(int)
 labels_train = utils.to_categorical(labels_train, 8)
 labels_test = utils.to_categorical(labels_test, 8)
 
+pool_size = (2, 2)
+
 
 # Model architecture
 model = Sequential([
     Input(shape=(48, 48, 1)),
     RandomZoom(height_factor=0.2, width_factor=0.2, fill_mode="reflect", interpolation="bilinear"),
     Conv2D(32, (3, 3), activation='relu'),
-    MaxPooling2D(),
+    AveragePooling2D(pool_size=pool_size),
     Conv2D(64, (3, 3), activation='relu'),
-    MaxPooling2D(),
+    AveragePooling2D(pool_size=pool_size),
     Conv2D(64, (3, 3), activation='relu'),
     Flatten(),
     Dense(64, activation='relu'),
@@ -83,7 +85,7 @@ batch_size = 64
 history = model.fit(images_train, labels_train, epochs=epochs, batch_size=batch_size, validation_data=(images_test, labels_test), callbacks=[stopEarly])
 
 
-modelFileName = os.path.join(os.getcwd(), 'output/model_emotion.keras')
+modelFileName = os.path.join(os.getcwd(), 'output/model_emotion_2.keras')
 model.save(modelFileName)
 
 
