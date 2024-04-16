@@ -6,7 +6,7 @@ capture = cv2.VideoCapture(0)
 model = load_model('output/model_emotion.keras')
 classes = ['anger', 'contempt', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']
 
-THRESHOLD = 0.5
+THRESHOLD = 0.3
 def main():
     prev_emotion = None
     while True:
@@ -23,7 +23,7 @@ def main():
         except Exception as e:
             print(e)
             exit(1)
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(300, 300))
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(600, 600))
 
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
