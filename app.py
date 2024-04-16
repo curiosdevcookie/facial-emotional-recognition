@@ -20,9 +20,9 @@ def index():
 @socketio.on('image')
 def handle_image(data):
     try:
-
-        if data.startswith('data:image/jpeg;base64,'):
-            data = data[23:]
+        prefix = 'data:image/jpeg;base64,'
+        if data.startswith(prefix):
+            data = data[len(prefix):]
 
         image_data = base64.b64decode(data)
 
@@ -62,7 +62,6 @@ def handle_image(data):
 
     except Exception as e:
         print(f"Error processing image: {e}")
-
 
 if __name__ == '__main__':
     socketio.run(app)
